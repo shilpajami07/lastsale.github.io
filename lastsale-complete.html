@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lastsale — Buy &amp; Sell Locally</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── VARIABLES ── */
+:root {
+  --bg: #F5F7F7;
+  --white: #FFFFFF;
+  --surface: #FAFBFB;
+  --teal: #2ABFAD;
+  --teal-dark: #1FA396;
+  --teal-deep: #0E7A6E;
+  --teal-soft: #EAF8F6;
+  --teal-mid: #C2EEE9;
+  --navy: #0F2027;
+  --navy-mid: #1C3140;
+  --slate: #2E4A5A;
+  --mid: #5E7585;
+  --muted: #9AB0BC;
+  --border: #DDE8EB;
+  --border-light: #EEF4F5;
+  --gold: #F0B429;
+  --shadow-xs: 0 1px 3px rgba(15,32,39,0.06);
+  --shadow-sm: 0 2px 8px rgba(15,32,39,0.08);
+  --shadow-md: 0 6px 24px rgba(15,32,39,0.10);
+  --shadow-lg: 0 16px 48px rgba(15,32,39,0.13);
+  --shadow-teal: 0 4px 20px rgba(42,191,173,0.28);
+  --radius: 14px;
+  --radius-sm: 9px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+/* ── RESET ── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--navy); min-height: 100vh; }
+
+/* ── NAVBAR ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--navy);
+  padding: 0 28px; height: 66px;
+  display: flex; align-items: center; gap: 20px;
+  box-shadow: 0 2px 16px rgba(15,32,39,0.2);
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 800; font-size: 24px;
+  color: #fff; flex-shrink: 0;
+  letter-spacing: -0.5px; cursor: pointer;
+}
+.nav-logo span { color: var(--teal); font-style: italic; }
+.nav-search { flex: 1; max-width: 540px; position: relative; }
+.nav-search input {
+  width: 100%; background: rgba(255,255,255,0.09);
+  border: 1.5px solid rgba(255,255,255,0.13);
+  border-radius: 50px; padding: 10px 20px 10px 44px;
+  font-family: 'Outfit', sans-serif; font-size: 14px; color: #fff;
+  transition: all 0.22s; outline: none;
+}
+.nav-search input:focus { border-color: var(--teal); background: rgba(255,255,255,0.14); box-shadow: 0 0 0 3px rgba(42,191,173,0.18); }
+.nav-search input::placeholder { color: rgba(255,255,255,0.38); }
+.nav-search .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.38); font-size: 15px; pointer-events: none; }
+.nav-links { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
+.nav-btn { padding: 9px 18px; border-radius: 50px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
+.nav-btn-ghost { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.78); border: 1px solid rgba(255,255,255,0.13); }
+.nav-btn-ghost:hover { background: rgba(255,255,255,0.14); color: #fff; }
+.nav-btn-primary { background: var(--teal); color: var(--navy); font-weight: 600; box-shadow: var(--shadow-teal); }
+.nav-btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(42,191,173,0.38); }
+.nav-icon-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.13); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; transition: all 0.2s; position: relative; color: rgba(255,255,255,0.7); }
+.nav-icon-btn:hover { background: rgba(255,255,255,0.16); color: #fff; }
+.badge { position: absolute; top: -3px; right: -3px; width: 17px; height: 17px; background: var(--teal); border-radius: 50%; font-size: 9px; color: var(--navy); font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--navy); }
+
+/* ── CATEGORY BAR ── */
+.category-bar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; align-items: center; gap: 6px; overflow-x: auto; height: 54px; scrollbar-width: none; }
+.category-bar::-webkit-scrollbar { display: none; }
+.cat-pill { flex-shrink: 0; padding: 7px 16px; border-radius: 50px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--mid); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.cat-pill:hover { border-color: var(--teal); color: var(--teal-deep); }
+.cat-pill.active { background: var(--teal); color: var(--navy); border-color: var(--teal); font-weight: 600; box-shadow: var(--shadow-teal); }
+
+/* ── HERO ── */
+.hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 55%, #163040 100%); padding: 72px 28px 64px; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 65% 75% at 50% 110%, rgba(42,191,173,0.22) 0%, transparent 65%); }
+.hero-content { position: relative; z-index: 1; }
+.hero-tag { display: inline-flex; align-items: center; gap: 7px; background: rgba(42,191,173,0.12); border: 1px solid rgba(42,191,173,0.25); border-radius: 50px; padding: 6px 16px; font-size: 12px; font-weight: 500; color: var(--teal); margin-bottom: 22px; letter-spacing: 0.3px; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(38px, 6vw, 68px); font-weight: 800; line-height: 1.05; color: #fff; margin-bottom: 18px; letter-spacing: -1px; }
+.hero h1 em { color: var(--teal); font-style: italic; }
+.hero p { font-size: 16px; color: rgba(255,255,255,0.48); max-width: 400px; margin: 0 auto 36px; line-height: 1.65; font-weight: 300; }
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hero-btn { padding: 14px 30px; border-radius: 50px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.22s; }
+.hero-btn-primary { background: var(--teal); color: var(--navy); box-shadow: var(--shadow-teal); }
+.hero-btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(42,191,173,0.42); }
+.hero-btn-outline { background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.85); }
+.hero-btn-outline:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* ── STATS BAR ── */
+.stats-bar { background: var(--teal-deep); padding: 18px 28px; display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #fff; display: block; }
+.stat-label { font-size: 12px; color: rgba(255,255,255,0.58); font-weight: 300; }
+
+/* ── MAIN LAYOUT ── */
+.main { display: flex; min-height: calc(100vh - 200px); }
+
+/* ── SIDEBAR ── */
+.sidebar { width: 256px; flex-shrink: 0; background: var(--white); border-right: 1px solid var(--border); padding: 24px 18px; position: sticky; top: 120px; height: calc(100vh - 120px); overflow-y: auto; scrollbar-width: thin; }
+.sidebar-section { margin-bottom: 28px; }
+.sidebar-title { font-size: 10px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.sidebar-title::after { content: ''; flex: 1; height: 1px; background: var(--border-light); }
+.filter-group { margin-bottom: 18px; }
+.filter-label { font-size: 13px; font-weight: 500; color: var(--slate); margin-bottom: 8px; display: block; }
+.range-row { display: flex; gap: 8px; align-items: center; }
+.range-input { flex: 1; padding: 8px 11px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: 'Outfit', sans-serif; outline: none; color: var(--navy); background: var(--surface); transition: border-color 0.2s; }
+.range-input:focus { border-color: var(--teal); background: #fff; }
+.range-sep { color: var(--muted); font-size: 12px; }
+.checkbox-list { display: flex; flex-direction: column; gap: 9px; }
+.checkbox-item { display: flex; align-items: center; gap: 9px; cursor: pointer; font-size: 13px; color: var(--mid); transition: color 0.2s; }
+.checkbox-item:hover { color: var(--navy); }
+.checkbox-item input { accent-color: var(--teal); width: 15px; height: 15px; cursor: pointer; }
+.location-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: 'Outfit', sans-serif; outline: none; color: var(--navy); background: var(--surface); }
+.location-input:focus { border-color: var(--teal); background: #fff; }
+.apply-btn { width: 100%; padding: 11px; background: var(--teal); color: var(--navy); border: none; border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.apply-btn:hover { background: var(--teal-dark); }
+
+/* ── CONTENT ── */
+.content { flex: 1; padding: 28px 26px; min-width: 0; }
+.content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
+.content-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--navy); }
+.content-meta { font-size: 13px; color: var(--muted); margin-top: 2px; font-weight: 300; }
+.sort-select { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 50px; font-size: 13px; font-family: 'Outfit', sans-serif; background: var(--white); color: var(--slate); cursor: pointer; outline: none; }
+.sort-select:focus { border-color: var(--teal); }
+.view-toggle { display: flex; gap: 4px; }
+.view-btn { width: 34px; height: 34px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; color: var(--muted); }
+.view-btn.active { background: var(--teal); border-color: var(--teal); color: var(--navy); }
+
+/* ── LISTING GRID ── */
+.listing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
+
+/* ── CARDS ── */
+.listing-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-xs); border: 1px solid var(--border-light); transition: all 0.26s cubic-bezier(0.34, 1.4, 0.64, 1); cursor: pointer; position: relative; animation: cardFade 0.4s ease both; }
+.listing-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--teal-mid); }
+.listing-card:nth-child(1){animation-delay:.05s} .listing-card:nth-child(2){animation-delay:.10s} .listing-card:nth-child(3){animation-delay:.15s} .listing-card:nth-child(4){animation-delay:.20s} .listing-card:nth-child(5){animation-delay:.25s} .listing-card:nth-child(6){animation-delay:.30s} .listing-card:nth-child(7){animation-delay:.35s} .listing-card:nth-child(8){animation-delay:.40s}
+@keyframes cardFade { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.card-img-wrap { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--bg); }
+.card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.45s ease; }
+.listing-card:hover .card-img-wrap img { transform: scale(1.05); }
+.card-fav { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); }
+.card-fav:hover { transform: scale(1.12); }
+.card-badge { position: absolute; top: 10px; left: 10px; padding: 4px 10px; border-radius: 50px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; }
+.card-badge.new  { background: var(--teal); color: var(--navy); }
+.card-badge.hot  { background: var(--navy); color: #fff; }
+.card-badge.sale { background: var(--gold); color: var(--navy); }
+.card-body { padding: 14px 15px; }
+.card-title { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-meta { font-size: 12px; color: var(--muted); margin-bottom: 10px; font-weight: 300; }
+.card-price-row { display: flex; align-items: center; justify-content: space-between; }
+.card-price { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--navy); }
+.card-price-old { font-size: 12px; color: var(--muted); text-decoration: line-through; margin-left: 5px; font-weight: 300; }
+.card-stars { color: var(--gold); font-size: 11px; display: flex; align-items: center; gap: 2px; }
+.card-stars span { color: var(--muted); font-size: 10px; margin-left: 3px; }
+.card-footer { padding: 10px 15px; border-top: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+.card-seller { font-size: 11px; color: var(--muted); }
+.card-add-btn { background: var(--teal-soft); color: var(--teal-deep); border: 1px solid var(--teal-mid); border-radius: 50px; padding: 5px 13px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.18s; font-family: 'Outfit', sans-serif; }
+.card-add-btn:hover { background: var(--teal); color: var(--navy); border-color: var(--teal); }
+
+/* ── CHAT FAB ── */
+.chat-fab { position: fixed; bottom: 28px; right: 28px; width: 58px; height: 58px; background: var(--teal); border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: var(--shadow-teal); transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 200; color: var(--navy); }
+.chat-fab:hover { transform: scale(1.12); background: var(--teal-dark); }
+.chat-fab .fab-badge { position: absolute; top: -2px; right: -2px; width: 18px; height: 18px; background: var(--navy); border-radius: 50%; font-size: 10px; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg); }
+
+/* ── CHAT PANEL ── */
+.chat-panel { position: fixed; bottom: 100px; right: 28px; width: 340px; height: 460px; background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); border: 1px solid var(--border); display: none; flex-direction: column; z-index: 199; overflow: hidden; }
+.chat-panel.open { display: flex; animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.chat-header { padding: 14px 16px; background: var(--navy); color: #fff; display: flex; align-items: center; gap: 10px; }
+.chat-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; color: var(--navy); }
+.chat-header-info h4 { font-size: 14px; font-weight: 600; }
+.chat-header-info p { font-size: 11px; color: rgba(255,255,255,0.42); font-weight: 300; }
+.chat-header-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.48); font-size: 18px; cursor: pointer; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
+.chat-msg { max-width: 76%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.45; }
+.chat-msg-in { background: var(--white); color: var(--navy); border-bottom-left-radius: 4px; box-shadow: var(--shadow-xs); align-self: flex-start; }
+.chat-msg-out { background: var(--teal); color: var(--navy); border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 500; }
+.chat-msg-time { font-size: 10px; opacity: 0.42; margin-top: 3px; }
+.chat-input-row { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); background: var(--white); }
+.chat-input { flex: 1; padding: 9px 14px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 50px; font-size: 13px; font-family: 'Outfit', sans-serif; outline: none; color: var(--navy); transition: border-color 0.2s; }
+.chat-input:focus { border-color: var(--teal); }
+.chat-send { width: 36px; height: 36px; background: var(--teal); border: none; border-radius: 50%; color: var(--navy); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.chat-send:hover { background: var(--teal-dark); transform: scale(1.05); }
+
+/* ── MODALS ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(15,32,39,0.55); backdrop-filter: blur(5px); z-index: 300; display: none; align-items: center; justify-content: center; padding: 24px; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--white); border-radius: var(--radius-xl); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: fadeScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes fadeScale { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+.modal-header { padding: 26px 26px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-light); }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--navy); }
+.modal-close { width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: none; cursor: pointer; font-size: 16px; color: var(--mid); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.modal-close:hover { background: var(--border); color: var(--navy); }
+.modal-body { padding: 22px 26px 26px; }
+.form-row { margin-bottom: 16px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: var(--mid); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.7px; }
+.form-input, .form-select, .form-textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: 'Outfit', sans-serif; color: var(--navy); background: var(--surface); outline: none; transition: all 0.2s; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--teal); background: #fff; box-shadow: 0 0 0 3px rgba(42,191,173,0.1); }
+.form-textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.img-upload { border: 2px dashed var(--border); border-radius: var(--radius); padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface); }
+.img-upload:hover { border-color: var(--teal); background: var(--teal-soft); }
+.img-upload-icon { font-size: 30px; margin-bottom: 8px; }
+.img-upload p { font-size: 13px; color: var(--muted); }
+.img-upload strong { color: var(--teal-deep); }
+.submit-btn { width: 100%; padding: 14px; background: var(--teal); color: var(--navy); border: none; border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+.submit-btn:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+/* ── PRODUCT DETAIL ── */
+.product-modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.product-img-main { border-radius: var(--radius); aspect-ratio: 1; object-fit: cover; width: 100%; background: var(--bg); }
+.product-detail-title { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 600; color: var(--navy); line-height: 1.25; }
+.product-detail-price { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--navy); margin: 10px 0 4px; }
+.product-detail-meta { font-size: 13px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; font-weight: 300; }
+.product-detail-desc { font-size: 14px; color: var(--mid); line-height: 1.75; margin-bottom: 18px; font-weight: 300; }
+.seller-card { background: var(--teal-soft); border: 1px solid var(--teal-mid); border-radius: var(--radius-sm); padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.seller-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--teal); color: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.seller-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+.seller-rating { font-size: 12px; color: var(--mid); font-weight: 300; }
+.product-actions { display: flex; gap: 10px; }
+.btn-contact { flex: 1; padding: 13px; background: var(--teal); color: var(--navy); border: none; border-radius: var(--radius-sm); font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-contact:hover { background: var(--teal-dark); }
+.btn-save-item { padding: 13px 16px; background: transparent; color: var(--slate); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 17px; cursor: pointer; transition: all 0.2s; }
+.btn-save-item:hover { border-color: var(--teal); color: var(--teal-deep); }
+.verified-badge { display: inline-flex; align-items: center; gap: 3px; background: rgba(42,191,173,0.13); color: var(--teal-deep); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 50px; }
+
+/* ── TOAST ── */
+.toast-wrap { position: fixed; bottom: 104px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+.toast { background: var(--navy); color: #fff; padding: 11px 22px; border-radius: 50px; font-size: 13px; font-weight: 500; box-shadow: var(--shadow-md); animation: toastIn 0.3s ease, toastOut 0.3s ease 2.4s forwards; }
+@keyframes toastIn  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* ── FOOTER ── */
+.site-footer { background: var(--navy); padding: 56px 28px 32px; margin-top: 60px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto 40px; }
+.footer-brand-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+.footer-brand-logo span { color: var(--teal); font-style: italic; }
+.footer-brand p { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.7; max-width: 220px; font-weight: 300; }
+.footer-col h4 { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 16px; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul li a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; font-weight: 300; }
+.footer-col ul li a:hover { color: var(--teal); }
+.footer-bottom { max-width: 1200px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.28); font-weight: 300; }
+.footer-social { display: flex; gap: 10px; }
+.social-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: all 0.2s; color: rgba(255,255,255,0.5); }
+.social-btn:hover { background: rgba(42,191,173,0.2); border-color: var(--teal); color: var(--teal); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  nav { padding: 0 14px; gap: 10px; }
+  .nav-btn-ghost { display: none; }
+  .content { padding: 18px 14px; }
+  .listing-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .stats-bar { gap: 28px; }
+  .chat-panel { width: calc(100vw - 28px); right: 14px; }
+  .product-modal-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo" onclick="showToast('Welcome to Lastsale!')">Last<span>sale</span></div>
+  <div class="nav-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Search listings, brands, locations…" id="searchInput" oninput="handleSearch(this.value)">
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn nav-btn-ghost" onclick="showProfile()">My Profile</button>
+    <button class="nav-icon-btn" onclick="showFavorites()" title="Saved">🤍<span class="badge" id="favBadge">0</span></button>
+    <button class="nav-icon-btn" onclick="toggleChat()" title="Messages">💬<span class="badge">3</span></button>
+    <button class="nav-btn nav-btn-primary" onclick="openListModal()">+ List Item</button>
+  </div>
+</nav>
+
+<!-- CATEGORY BAR -->
+<div class="category-bar">
+  <button class="cat-pill active" onclick="filterCat(this,'all')">All</button>
+  <button class="cat-pill" onclick="filterCat(this,'fashion')">👗 Fashion</button>
+  <button class="cat-pill" onclick="filterCat(this,'electronics')">📱 Electronics</button>
+  <button class="cat-pill" onclick="filterCat(this,'home')">🏠 Home &amp; Garden</button>
+  <button class="cat-pill" onclick="filterCat(this,'cars')">🚗 Vehicles</button>
+  <button class="cat-pill" onclick="filterCat(this,'sports')">⚽ Sports</button>
+  <button class="cat-pill" onclick="filterCat(this,'books')">📚 Books</button>
+  <button class="cat-pill" onclick="filterCat(this,'toys')">🧸 Toys &amp; Kids</button>
+  <button class="cat-pill" onclick="filterCat(this,'music')">🎸 Music</button>
+  <button class="cat-pill" onclick="filterCat(this,'pets')">🐾 Pets</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">🇦🇺 Australia's smartest marketplace</div>
+    <h1>Buy. Sell.<br><em>Discover.</em></h1>
+    <p>Thousands of unique listings from verified local sellers — delivered to your door or picked up nearby.</p>
+    <div class="hero-actions">
+      <button class="hero-btn hero-btn-primary" onclick="document.getElementById('listings').scrollIntoView({behavior:'smooth'})">Browse Listings</button>
+      <button class="hero-btn hero-btn-outline" onclick="openListModal()">Sell for Free</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num">84K+</span><span class="stat-label">Active Listings</span></div>
+  <div class="stat"><span class="stat-num">210K</span><span class="stat-label">Verified Sellers</span></div>
+  <div class="stat"><span class="stat-num">98%</span><span class="stat-label">Satisfaction Rate</span></div>
+  <div class="stat"><span class="stat-num">Free</span><span class="stat-label">To List</span></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Filters</div>
+      <div class="filter-group">
+        <label class="filter-label">📍 Location</label>
+        <input class="location-input" type="text" placeholder="e.g. Melbourne, VIC" id="locationFilter">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">💰 Price Range</label>
+        <div class="range-row">
+          <input class="range-input" type="number" placeholder="Min" id="minPrice">
+          <span class="range-sep">—</span>
+          <input class="range-input" type="number" placeholder="Max" id="maxPrice">
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">🏷 Condition</label>
+        <div class="checkbox-list">
+          <label class="checkbox-item"><input type="checkbox" checked> New</label>
+          <label class="checkbox-item"><input type="checkbox" checked> Like New</label>
+          <label class="checkbox-item"><input type="checkbox" checked> Good</label>
+          <label class="checkbox-item"><input type="checkbox"> Fair</label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">🚚 Delivery</label>
+        <div class="checkbox-list">
+          <label class="checkbox-item"><input type="checkbox" checked> Local Pickup</label>
+          <label class="checkbox-item"><input type="checkbox" checked> Ships Nationwide</label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">⭐ Minimum Rating</label>
+        <div class="checkbox-list">
+          <label class="checkbox-item"><input type="radio" name="rating"> 4★ &amp; above</label>
+          <label class="checkbox-item"><input type="radio" name="rating"> 3★ &amp; above</label>
+          <label class="checkbox-item"><input type="radio" name="rating" checked> Any</label>
+        </div>
+      </div>
+      <button class="apply-btn" onclick="applyFilters()">Apply Filters</button>
+    </div>
+  </aside>
+
+  <div class="content">
+    <div class="content-header">
+      <div>
+        <div class="content-title">Recent Listings</div>
+        <div class="content-meta" id="listingCount">Showing 8 items</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <select class="sort-select" onchange="sortListings(this.value)">
+          <option value="recent">Most Recent</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
+        </select>
+        <div class="view-toggle">
+          <button class="view-btn active">⊞</button>
+          <button class="view-btn" onclick="showToast('List view coming soon!')">☰</button>
+        </div>
+      </div>
+    </div>
+    <div class="listing-grid" id="listings"></div>
+  </div>
+</div>
+
+<!-- CHAT FAB -->
+<button class="chat-fab" onclick="toggleChat()">💬<div class="fab-badge">3</div></button>
+
+<!-- CHAT PANEL -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div class="chat-avatar">👤</div>
+    <div class="chat-header-info"><h4>Sarah M.</h4><p>Active now · Melbourne</p></div>
+    <button class="chat-header-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg chat-msg-in">Hi! Is the jacket still available? 👋<div class="chat-msg-time">10:32 AM</div></div>
+    <div class="chat-msg chat-msg-out">Yes, still available — barely worn! 🙌<div class="chat-msg-time">10:34 AM</div></div>
+    <div class="chat-msg chat-msg-in">Would you take $85? It's my max 🥺<div class="chat-msg-time">10:35 AM</div></div>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" type="text" placeholder="Type a message…" id="chatMsgInput" onkeydown="if(event.key==='Enter') sendMsg()">
+    <button class="chat-send" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<!-- LIST ITEM MODAL -->
+<div class="modal-overlay" id="listModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">List an Item</div>
+      <button class="modal-close" onclick="closeModal('listModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row"><label class="form-label">Title</label><input class="form-input" type="text" placeholder="e.g. Vintage Levi's 501 Jeans, Size 32"></div>
+      <div class="form-row-2">
+        <div class="form-row" style="margin:0"><label class="form-label">Category</label><select class="form-select"><option>Fashion</option><option>Electronics</option><option>Home &amp; Garden</option><option>Vehicles</option><option>Sports</option><option>Books</option></select></div>
+        <div class="form-row" style="margin:0"><label class="form-label">Condition</label><select class="form-select"><option>New</option><option>Like New</option><option>Good</option><option>Fair</option></select></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-row" style="margin:0"><label class="form-label">Price (AUD)</label><input class="form-input" type="number" placeholder="0.00"></div>
+        <div class="form-row" style="margin:0"><label class="form-label">Location</label><input class="form-input" type="text" placeholder="Suburb, State"></div>
+      </div>
+      <div class="form-row"><label class="form-label">Description</label><textarea class="form-textarea" placeholder="Describe your item — size, brand, condition details, why you're selling…"></textarea></div>
+      <div class="form-row">
+        <label class="form-label">Photos</label>
+        <div class="img-upload" onclick="showToast('📷 Photo upload ready!')">
+          <div class="img-upload-icon">📸</div>
+          <p>Drag &amp; drop or <strong>choose files</strong></p>
+          <p style="margin-top:4px">Up to 10 photos · JPG, PNG, WebP</p>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="submitListing()">Publish Listing — Free</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-header">
+      <div class="modal-title" id="productModalTitle">Item Details</div>
+      <button class="modal-close" onclick="closeModal('productModal')">✕</button>
+    </div>
+    <div class="modal-body"><div class="product-modal-grid" id="productModalGrid"></div></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-logo">Last<span>sale</span></div>
+      <p>Buy and sell locally or nationwide. Thousands of verified listings across fashion, electronics, home goods, and more.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Marketplace</h4>
+      <ul>
+        <li><a href="#">Browse Listings</a></li>
+        <li><a href="#">Sell an Item</a></li>
+        <li><a href="#">Saved Items</a></li>
+        <li><a href="#">Top Deals</a></li>
+        <li><a href="#">New Arrivals</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Help Centre</a></li>
+        <li><a href="#">Buyer Protection</a></li>
+        <li><a href="#">Seller Guidelines</a></li>
+        <li><a href="#">Report a Listing</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Lastsale</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Lastsale Pty Ltd. All rights reserved. ABN 12 345 678 901</p>
+    <div class="footer-social">
+      <button class="social-btn" onclick="showToast('Instagram coming soon!')">📸</button>
+      <button class="social-btn" onclick="showToast('TikTok coming soon!')">🎵</button>
+      <button class="social-btn" onclick="showToast('Facebook coming soon!')">👥</button>
+      <button class="social-btn" onclick="showToast('Twitter/X coming soon!')">🐦</button>
+    </div>
+  </div>
+</footer>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+const LISTINGS = [
+  { id:1, title:"Nike Air Force 1 '07", cat:"fashion", price:120, oldPrice:200, location:"Melbourne, VIC", img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", badge:"hot", desc:"Classic white leather AF1s. Worn twice. Size US 10.", seller:"Jordan K.", rating:4.9, reviews:128, condition:"Like New" },
+  { id:2, title:"Sony WH-1000XM5 Headphones", cat:"electronics", price:299, oldPrice:450, location:"Sydney, NSW", img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80", badge:"sale", desc:"Industry leading noise cancellation, barely used.", seller:"Tech Resale AU", rating:5.0, reviews:67, condition:"Like New" },
+  { id:3, title:"Vintage Leather Sofa", cat:"home", price:680, location:"Brisbane, QLD", img:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80", badge:"new", desc:"Beautiful tan leather, perfect aged patina. 3-seater.", seller:"Emily R.", rating:4.7, reviews:22, condition:"Good" },
+  { id:4, title:"Levi's 501 Original Jeans", cat:"fashion", price:65, oldPrice:120, location:"Adelaide, SA", img:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=80", badge:null, desc:"Vintage 90s 501s, W32 L32, slight wear on knees.", seller:"Thrift.AU", rating:4.6, reviews:211, condition:"Good" },
+  { id:5, title:'MacBook Air M2 13"', cat:"electronics", price:1350, oldPrice:1799, location:"Melbourne, VIC", img:"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400&q=80", badge:"hot", desc:"2023 model, Midnight colour, 8GB/256GB. AppleCare until 2025.", seller:"GadgetFlip", rating:4.8, reviews:44, condition:"Like New" },
+  { id:6, title:"Fjallraven Kanken Backpack", cat:"fashion", price:89, location:"Perth, WA", img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=80", badge:"new", desc:"Deep red, one zipper slightly sticky otherwise perfect.", seller:"Mia L.", rating:4.5, reviews:17, condition:"Good" },
+  { id:7, title:"Vintage Record Player", cat:"music", price:195, location:"Hobart, TAS", img:"https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&q=80", badge:null, desc:"1970s turntable, serviced last year. Plays 33s and 45s.", seller:"VinylVault", rating:4.9, reviews:56, condition:"Good" },
+  { id:8, title:"Giant Talon Mountain Bike", cat:"sports", price:440, oldPrice:750, location:"Canberra, ACT", img:"https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=400&q=80", badge:"sale", desc:"M frame, 21-speed, recently tuned. New tyres fitted.", seller:"RidersAU", rating:4.7, reviews:34, condition:"Good" }
+];
+
+let favorites = new Set();
+let activeCat = 'all';
+let searchQuery = '';
+
+function renderListings(items) {
+  const grid = document.getElementById('listings');
+  document.getElementById('listingCount').textContent = 'Showing ' + items.length + ' item' + (items.length !== 1 ? 's' : '');
+  grid.innerHTML = items.map(function(item, i) {
+    var badgeHtml = item.badge
+      ? '<span class="card-badge ' + item.badge + '">' + (item.badge === 'hot' ? 'HOT' : item.badge === 'new' ? 'NEW' : 'SALE') + '</span>'
+      : '';
+    var favClass = favorites.has(item.id) ? 'card-fav active' : 'card-fav';
+    var favIcon  = favorites.has(item.id) ? '❤️' : '🤍';
+    var oldPrice = item.oldPrice ? '<span class="card-price-old">$' + item.oldPrice + '</span>' : '';
+    var stars    = '★'.repeat(Math.round(item.rating)) + '☆'.repeat(5 - Math.round(item.rating));
+    return '<div class="listing-card" style="animation-delay:' + (i * 0.05) + 's" onclick="openProduct(' + item.id + ')">'
+      + '<div class="card-img-wrap">'
+      + '<img src="' + item.img + '" alt="' + item.title + '" loading="lazy">'
+      + badgeHtml
+      + '<button class="' + favClass + '" onclick="event.stopPropagation();toggleFav(' + item.id + ',this)">' + favIcon + '</button>'
+      + '</div>'
+      + '<div class="card-body">'
+      + '<div class="card-title">' + item.title + '</div>'
+      + '<div class="card-meta">📍 ' + item.location + ' · ' + item.condition + '</div>'
+      + '<div class="card-price-row">'
+      + '<div><span class="card-price">$' + item.price + '</span>' + oldPrice + '</div>'
+      + '<div class="card-stars">' + stars + '<span>(' + item.reviews + ')</span></div>'
+      + '</div></div>'
+      + '<div class="card-footer">'
+      + '<span class="card-seller">by ' + item.seller + '</span>'
+      + '<button class="card-add-btn" onclick="event.stopPropagation();showToast(\'💬 Opening chat…\');setTimeout(toggleChat,400)">Contact</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+function getFiltered() {
+  var minP = document.getElementById('minPrice').value;
+  var maxP = document.getElementById('maxPrice').value;
+  return LISTINGS.filter(function(item) {
+    var catMatch    = activeCat === 'all' || item.cat === activeCat;
+    var searchMatch = !searchQuery || item.title.toLowerCase().indexOf(searchQuery) !== -1 || item.location.toLowerCase().indexOf(searchQuery) !== -1;
+    var priceMatch  = (!minP || item.price >= +minP) && (!maxP || item.price <= +maxP);
+    return catMatch && searchMatch && priceMatch;
+  });
+}
+
+function filterCat(el, cat) {
+  document.querySelectorAll('.cat-pill').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+  activeCat = cat;
+  renderListings(getFiltered());
+}
+
+function handleSearch(val) {
+  searchQuery = val.toLowerCase();
+  renderListings(getFiltered());
+}
+
+function applyFilters() {
+  renderListings(getFiltered());
+  showToast('Filters applied');
+}
+
+function sortListings(val) {
+  var items = getFiltered().slice();
+  if (val === 'price-asc')  items.sort(function(a,b){ return a.price - b.price; });
+  if (val === 'price-desc') items.sort(function(a,b){ return b.price - a.price; });
+  if (val === 'rating')     items.sort(function(a,b){ return b.rating - a.rating; });
+  renderListings(items);
+}
+
+function toggleFav(id, btn) {
+  if (favorites.has(id)) {
+    favorites.delete(id);
+    btn.textContent = '🤍';
+    btn.classList.remove('active');
+    showToast('Removed from saved');
+  } else {
+    favorites.add(id);
+    btn.textContent = '❤️';
+    btn.classList.add('active');
+    showToast('❤️ Saved to favourites');
+  }
+  document.getElementById('favBadge').textContent = favorites.size;
+}
+
+function showFavorites() {
+  if (favorites.size === 0) { showToast('No favourites yet — tap 🤍 to save'); return; }
+  renderListings(LISTINGS.filter(function(i){ return favorites.has(i.id); }));
+  document.getElementById('listings').scrollIntoView({ behavior: 'smooth' });
+  showToast('Showing ' + favorites.size + ' saved item' + (favorites.size > 1 ? 's' : ''));
+}
+
+function openProduct(id) {
+  var item = LISTINGS.find(function(l){ return l.id === id; });
+  if (!item) return;
+  document.getElementById('productModalTitle').textContent = item.title;
+  var stars = '★'.repeat(Math.round(item.rating)) + '☆'.repeat(5 - Math.round(item.rating));
+  var oldHtml = item.oldPrice ? '<span style="font-size:16px;color:var(--muted);text-decoration:line-through;font-weight:300">$' + item.oldPrice + '</span>' : '';
+  document.getElementById('productModalGrid').innerHTML =
+    '<div><img class="product-img-main" src="' + item.img + '" alt="' + item.title + '"></div>'
+    + '<div>'
+    + '<div class="product-detail-title">' + item.title + '</div>'
+    + '<div class="product-detail-price">$' + item.price + ' ' + oldHtml + '</div>'
+    + '<div class="product-detail-meta"><span>📍 ' + item.location + '</span><span>🏷 ' + item.condition + '</span><span style="color:var(--gold)">' + stars + '</span><span>(' + item.reviews + ' reviews)</span></div>'
+    + '<div class="product-detail-desc">' + item.desc + '</div>'
+    + '<div class="seller-card"><div class="seller-avatar">👤</div><div>'
+    + '<div class="seller-name">' + item.seller + ' <span class="verified-badge">✓ Verified</span></div>'
+    + '<div class="seller-rating">⭐ ' + item.rating + ' · ' + item.reviews + ' reviews</div>'
+    + '</div></div>'
+    + '<div class="product-actions">'
+    + '<button class="btn-contact" onclick="closeModal(\'productModal\');toggleChat();showToast(\'💬 Chat started!\')">💬 Message Seller</button>'
+    + '<button class="btn-save-item" onclick="toggleFavModal(' + item.id + ',this)">🤍</button>'
+    + '</div></div>';
+  document.getElementById('productModal').classList.add('open');
+}
+
+function toggleFavModal(id, btn) {
+  if (favorites.has(id)) {
+    favorites.delete(id); btn.textContent = '🤍'; showToast('Removed from saved');
+  } else {
+    favorites.add(id); btn.textContent = '❤️'; showToast('❤️ Saved!');
+  }
+  document.getElementById('favBadge').textContent = favorites.size;
+  renderListings(getFiltered());
+}
+
+function toggleChat() { document.getElementById('chatPanel').classList.toggle('open'); }
+
+function sendMsg() {
+  var input = document.getElementById('chatMsgInput');
+  var txt = input.value.trim();
+  if (!txt) return;
+  var msgs = document.getElementById('chatMessages');
+  var div = document.createElement('div');
+  div.className = 'chat-msg chat-msg-out';
+  div.innerHTML = txt + '<div class="chat-msg-time">Just now</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  input.value = '';
+  setTimeout(function() {
+    var replies = ['That sounds great! 😊','Can we meet Saturday?','Is local pickup available?','Deal! 🙌','Could you go a little lower?'];
+    var rep = document.createElement('div');
+    rep.className = 'chat-msg chat-msg-in';
+    rep.innerHTML = replies[Math.floor(Math.random() * replies.length)] + '<div class="chat-msg-time">Just now</div>';
+    msgs.appendChild(rep);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 1200);
+}
+
+function openListModal()  { document.getElementById('listModal').classList.add('open'); }
+function closeModal(id)   { document.getElementById(id).classList.remove('open'); }
+function submitListing()  { closeModal('listModal'); showToast('🎉 Your listing is now live!'); }
+function showProfile()    { showToast('👤 Profile page coming soon!'); }
+
+document.querySelectorAll('.modal-overlay').forEach(function(o) {
+  o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+});
+
+function showToast(msg) {
+  var wrap = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 2800);
+}
+
+renderListings(LISTINGS);
+</script>
+</body>
+</html>
