@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lastsale — Australia's Smartest Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0f2420;
+    --surface: #1a3530;
+    --surface2: #213f39;
+    --teal: #3ecfb8;
+    --teal2: #2ab5a0;
+    --teal-soft: #3ecfb820;
+    --white: #f4faf8;
+    --muted: #7aada4;
+    --danger: #e05c5c;
+    --gold: #f0c040;
+    --border: #2e5049;
+    --card: #162e2a;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--white); }
+  .nav-logo span { font-style: italic; color: var(--teal); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .nav-icon-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--white); border-radius: 50%; width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; position: relative; transition: all .2s;
+  }
+  .nav-icon-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--teal); color: var(--bg); border-radius: 50%;
+    width: 18px; height: 18px; font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn {
+    padding: 10px 20px; border-radius: 50px; border: none;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600;
+    font-size: 14px; transition: all .2s;
+  }
+  .btn-primary { background: var(--teal); color: var(--bg); }
+  .btn-primary:hover { background: var(--teal2); transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--teal); border: 1.5px solid var(--teal); }
+  .btn-outline:hover { background: var(--teal-soft); }
+  .btn-ghost { background: var(--surface2); color: var(--white); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--teal); }
+  .btn-danger { background: var(--danger); color: white; }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 4px; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px; overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px; cursor: pointer; font-size: 14px; font-weight: 500;
+    color: var(--muted); border-bottom: 2px solid transparent;
+    white-space: nowrap; transition: all .2s;
+  }
+  .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+  .tab:hover { color: var(--white); }
+
+  /* ── VIEWS ── */
+  .view { display: none; padding: 28px 24px; max-width: 1100px; margin: 0 auto; }
+  .view.active { display: block; }
+
+  /* ── CARDS ── */
+  .listings-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px; margin-top: 24px;
+  }
+  .listing-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    cursor: pointer; transition: all .25s;
+  }
+  .listing-card:hover { border-color: var(--teal); transform: translateY(-3px); box-shadow: 0 12px 32px #0007; }
+  .listing-card-img {
+    width: 100%; height: 180px; object-fit: cover;
+    background: var(--surface2); display: flex; align-items: center;
+    justify-content: center; font-size: 48px;
+  }
+  .listing-card-body { padding: 14px; }
+  .listing-card-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .listing-card-price { color: var(--teal); font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .listing-card-meta { display: flex; justify-content: space-between; align-items: center; }
+  .listing-card-seller { font-size: 12px; color: var(--muted); }
+  .views-badge { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+
+  /* ── FORMS ── */
+  .form-group { margin-bottom: 18px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  input, textarea, select {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    color: var(--white); border-radius: var(--radius-sm); padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; transition: border .2s;
+  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--teal); }
+  select option { background: var(--surface2); }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* ── PHOTO UPLOAD ── */
+  .photo-upload-area {
+    border: 2px dashed var(--border); border-radius: var(--radius);
+    padding: 32px; text-align: center; cursor: pointer;
+    transition: all .2s; background: var(--surface2);
+  }
+  .photo-upload-area:hover { border-color: var(--teal); background: var(--teal-soft); }
+  .photo-preview-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .photo-preview {
+    width: 80px; height: 80px; border-radius: var(--radius-sm);
+    object-fit: cover; border: 1px solid var(--border); position: relative;
+  }
+  .photo-preview-wrap { position: relative; display: inline-block; }
+  .photo-remove {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--danger); color: white; border: none;
+    border-radius: 50%; width: 20px; height: 20px; font-size: 11px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: #000a; z-index: 200; align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px; width: 100%; max-width: 560px;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 22px; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+  .modal-close:hover { color: var(--white); }
+
+  /* ── LISTING DETAIL ── */
+  .listing-detail-imgs { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; }
+  .listing-detail-img {
+    min-width: 280px; height: 200px; border-radius: var(--radius);
+    object-fit: cover; background: var(--surface2);
+    display: flex; align-items: center; justify-content: center; font-size: 64px;
+  }
+  .listing-detail-price { font-size: 32px; font-weight: 700; color: var(--teal); margin: 8px 0; }
+  .listing-detail-title { font-family: 'Playfair Display', serif; font-size: 26px; }
+  .tag { display: inline-block; background: var(--teal-soft); color: var(--teal); border-radius: 50px; padding: 4px 12px; font-size: 12px; margin-right: 6px; }
+
+  /* ── SELLER STATS ── */
+  .stats-row { display: flex; gap: 16px; margin: 20px 0; flex-wrap: wrap; }
+  .stat-box {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 24px; text-align: center; flex: 1; min-width: 100px;
+  }
+  .stat-num { font-size: 28px; font-weight: 700; color: var(--teal); }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── CART ── */
+  .cart-item {
+    display: flex; gap: 14px; align-items: center;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px; margin-bottom: 12px;
+  }
+  .cart-item-img { width: 60px; height: 60px; border-radius: var(--radius-sm); object-fit: cover; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .cart-total { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-top: 20px; }
+
+  /* ── MESSAGES ── */
+  .msg-thread {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 10px; cursor: pointer;
+    padding: 14px; display: flex; gap: 12px; align-items: center;
+    transition: border-color .2s;
+  }
+  .msg-thread:hover { border-color: var(--teal); }
+  .msg-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: var(--bg); flex-shrink: 0; }
+  .chat-area { height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--bg); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 12px; }
+  .msg-bubble { max-width: 70%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+  .msg-bubble.me { background: var(--teal); color: var(--bg); align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg-bubble.them { background: var(--surface2); color: var(--white); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg-time { font-size: 10px; opacity: .6; margin-top: 3px; }
+
+  /* ── RATINGS ── */
+  .star { font-size: 28px; cursor: pointer; color: var(--border); transition: color .15s; }
+  .star.active { color: var(--gold); }
+  .rating-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 10px;
+  }
+  .stars-display { color: var(--gold); font-size: 14px; }
+
+  /* ── PAYMENT ── */
+  .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .pay-option {
+    border: 2px solid var(--border); border-radius: var(--radius);
+    padding: 16px; text-align: center; cursor: pointer;
+    transition: all .2s; background: var(--card);
+  }
+  .pay-option:hover, .pay-option.selected { border-color: var(--teal); background: var(--teal-soft); }
+  .pay-option-icon { font-size: 28px; margin-bottom: 6px; }
+  .pay-option-label { font-size: 13px; font-weight: 500; }
+  .card-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .secure-badge { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; margin-bottom: 16px; }
+  .secure-badge span { color: var(--teal); font-size: 16px; }
+
+  /* ── SUCCESS ── */
+  .success-screen { text-align: center; padding: 40px 20px; }
+  .success-icon { font-size: 64px; margin-bottom: 16px; }
+  .success-title { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 8px; }
+
+  /* ── SELLER LISTING TABLE ── */
+  .my-listing-row {
+    display: flex; gap: 14px; align-items: center;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px; margin-bottom: 10px;
+  }
+  .my-listing-row:hover { border-color: var(--teal); }
+  .view-count { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 13px; margin-left: auto; }
+
+  /* ── MISC ── */
+  .section-title { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 6px; }
+  .section-sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .flex-row { display: flex; align-items: center; gap: 12px; }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .seller-info { display: flex; align-items: center; gap: 10px; margin: 12px 0; }
+  .seller-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--bg); }
+  .chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 50px; padding: 6px 14px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .chip:hover, .chip.active { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .notification { position: fixed; bottom: 24px; right: 24px; background: var(--teal); color: var(--bg); padding: 14px 20px; border-radius: var(--radius); font-weight: 600; font-size: 14px; z-index: 999; transform: translateY(100px); transition: transform .3s; max-width: 300px; }
+  .notification.show { transform: translateY(0); }
+  input[type=file] { display: none; }
+  .progress-steps { display: flex; gap: 0; margin-bottom: 28px; }
+  .step { flex: 1; text-align: center; }
+  .step-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; font-size: 12px; font-weight: 600; transition: all .3s; }
+  .step.done .step-dot { background: var(--teal); color: var(--bg); }
+  .step.active .step-dot { background: var(--teal); color: var(--bg); box-shadow: 0 0 0 4px var(--teal-soft); }
+  .step-label { font-size: 11px; color: var(--muted); }
+  .step.active .step-label, .step.done .step-label { color: var(--teal); }
+
+  @media (max-width: 600px) {
+    .listings-grid { grid-template-columns: 1fr 1fr; }
+    .payment-methods { grid-template-columns: 1fr 1fr; }
+    .card-fields { grid-template-columns: 1fr; }
+    nav { padding: 0 14px; }
+    .view { padding: 20px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Last<span>sale</span></div>
+  <div class="nav-actions">
+    <div class="nav-icon-btn" onclick="openView('messages')" title="Messages">
+      💬<span class="badge" id="msg-badge">2</span>
+    </div>
+    <div class="nav-icon-btn" onclick="openView('cart')" title="Cart">
+      🛒<span class="badge" id="cart-badge">0</span>
+    </div>
+    <button class="btn btn-primary" onclick="openView('create-listing')">+ List Item</button>
+  </div>
+</nav>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="openView('browse')">🏠 Browse</div>
+  <div class="tab" onclick="openView('my-listings')">📦 My Listings</div>
+  <div class="tab" onclick="openView('messages')">💬 Messages</div>
+  <div class="tab" onclick="openView('cart')">🛒 Cart</div>
+  <div class="tab" onclick="openView('orders')">📋 Orders</div>
+  <div class="tab" onclick="openView('create-listing')">➕ Create Listing</div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- VIEW: BROWSE -->
+<!-- ══════════════════════════════════════ -->
+<div class="view active" id="view-browse">
+  <div class="flex-between" style="margin-bottom:16px">
+    <div>
+      <h1 class="section-title">Discover Listings</h1>
+      <p class="section-sub">Thousands of unique items from verified local sellers</p>
+    </div>
+    <input type="text" placeholder="🔍 Search listings…" style="max-width:260px" id="search-input" oninput="filterListings()"/>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="category-chips">
+    <span class="chip active" onclick="filterCategory(this,'All')">All</span>
+    <span class="chip" onclick="filterCategory(this,'Fashion')">👗 Fashion</span>
+    <span class="chip" onclick="filterCategory(this,'Electronics')">📱 Electronics</span>
+    <span class="chip" onclick="filterCategory(this,'Home & Garden')">🏡 Home & Garden</span>
+    <span class="chip" onclick="filterCategory(this,'Vehicles')">🚗 Vehicles</span>
+    <span class="chip" onclick="filterCategory(this,'Sports')">⚽ Sports</span>
+    <span class="chip" onclick="filterCategory(this,'Books')">📚 Books</span>
+  </div>
+  <div class="listings-grid" id="listings-grid"></div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- VIEW: MY LISTINGS (SELLER DASHBOARD) -->
+<!-- ══════════════════════════════════════ -->
+<div class="view" id="view-my-listings">
+  <h1 class="section-title">My Listings</h1>
+  <p class="section-sub">Manage your items and track views</p>
+
+  <div class="stats-row" id="seller-stats">
+    <div class="stat-box"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total Listings</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-views">0</div><div class="stat-label">Total Views</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-sold">0</div><div class="stat-label">Items Sold</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-revenue">$0</div><div class="stat-label">Revenue</div></div>
+  </div>
+
+  <div id="my-listings-list"></div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- VIEW: CREATE LISTING -->
+<!-- ══════════════════════════════════════ -->
+<div class="view" id="view-create-listing">
+  <h1 class="section-title">Create a Listing</h1>
+  <p class="section-sub">List your item for free and reach thousands of buyers</p>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;max-width:640px">
+    <div class="form-group">
+      <label>Item Title *</label>
+      <input type="text" id="cl-title" placeholder="e.g. Vintage Levi's 501 Jeans – Size 32"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="form-group">
+        <label>Price (AUD) *</label>
+        <input type="number" id="cl-price" placeholder="0.00" min="0"/>
+      </div>
+      <div class="form-group">
+        <label>Category *</label>
+        <select id="cl-category">
+          <option value="">Select category…</option>
+          <option>Fashion</option>
+          <option>Electronics</option>
+          <option>Home & Garden</option>
+          <option>Vehicles</option>
+          <option>Sports</option>
+          <option>Books</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Condition</label>
+      <select id="cl-condition">
+        <option>Brand New</option>
+        <option>Like New</option>
+        <option>Good</option>
+        <option>Fair</option>
+        <option>Parts Only</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Description *</label>
+      <textarea id="cl-desc" placeholder="Describe your item — size, colour, any wear or defects, pickup location…"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Location</label>
+      <input type="text" id="cl-location" placeholder="e.g. Melbourne, VIC"/>
+    </div>
+    <div class="form-group">
+      <label>Photos (up to 6)</label>
+      <div class="photo-upload-area" onclick="document.getElementById('file-input').click()">
+        <div style="font-size:36px;margin-bottom:8px">📸</div>
+        <div style="font-weight:600;margin-bottom:4px">Click to upload photos</div>
+        <div style="font-size:13px;color:var(--muted)">JPG, PNG, WEBP up to 10MB each</div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" multiple onchange="handlePhotos(event)"/>
+      <div class="photo-preview-grid" id="photo-previews"></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="submitListing()">🚀 Post Listing</button>
+      <button class="btn btn-ghost" onclick="openView('browse')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- VIEW: MESSAGES -->
+<!-- ══════════════════════════════════════ -->
+<div class="view" id="view-messages">
+  <h1 class="section-title">Messages</h1>
+  <p class="section-sub">Chat with buyers and sellers</p>
+  <div id="threads-list"></div>
+  <div id="chat-view" style="display:none">
+    <button class="btn btn-ghost" style="margin-bottom:16px" onclick="document.getElementById('chat-view').style.display='none';document.getElementById('threads-list').style.display='block'">← Back</button>
+    <div style="font-weight:600;margin-bottom:12px" id="chat-header"></div>
+    <div class="chat-area" id="chat-area"></div>
+    <div style="display:flex;gap:10px">
+      <input type="text" id="msg-input" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendMessage()"/>
+      <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- VIEW: CART -->
+<!-- ══════════════════════════════════════ -->
+<div class="view" id="view-cart">
+  <h1 class="section-title">Your Cart</h1>
+  <p class="section-sub">Review items before checkout</p>
+  <div id="cart-items-list"></div>
+  <div id="cart-empty" class="empty-state" style="display:none">
+    <div class="icon">🛒</div>
+    <div>Your cart is empty</div>
+    <button class="btn btn-primary" style="margin-top:16px" onclick="openView('browse')">Browse Listings</button>
+  </div>
+  <div class="cart-total" id="cart-total-box" style="display:none">
+    <div class="flex-between" style="margin-bottom:12px">
+      <span style="color:var(--muted)">Subtotal</span><span id="cart-subtotal"></span>
+    </div>
+    <div class="flex-between" style="margin-bottom:12px">
+      <span style="color:var(--muted)">Service fee (2%)</span><span id="cart-fee"></span>
+    </div>
+    <hr class="divider" style="margin:12px 0"/>
+    <div class="flex-between" style="font-size:20px;font-weight:700;margin-bottom:16px">
+      <span>Total</span><span id="cart-total-amount" style="color:var(--teal)"></span>
+    </div>
+    <button class="btn btn-primary" style="width:100%;font-size:16px;padding:14px" onclick="openPayment()">🔒 Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- VIEW: ORDERS -->
+<!-- ══════════════════════════════════════ -->
+<div class="view" id="view-orders">
+  <h1 class="section-title">My Orders</h1>
+  <p class="section-sub">Rate sellers and track your purchases</p>
+  <div id="orders-list"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODAL: LISTING DETAIL -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-listing">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-listing-title"></span>
+      <button class="modal-close" onclick="closeModal('modal-listing')">✕</button>
+    </div>
+    <div id="modal-listing-body"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODAL: PAYMENT -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-payment">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Secure Checkout</span>
+      <button class="modal-close" onclick="closeModal('modal-payment')">✕</button>
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div class="progress-steps" id="pay-steps">
+      <div class="step active" id="pstep-1"><div class="step-dot">1</div><div class="step-label">Payment</div></div>
+      <div class="step" id="pstep-2"><div class="step-dot">2</div><div class="step-label">Confirm</div></div>
+      <div class="step" id="pstep-3"><div class="step-dot">3</div><div class="step-label">Done</div></div>
+    </div>
+
+    <!-- STEP 1: Choose payment -->
+    <div id="pay-step-1">
+      <div class="secure-badge"><span>🔒</span> Payments are encrypted and secured by Lastsale Pay</div>
+      <div style="font-weight:600;margin-bottom:12px;font-size:15px">Choose Payment Method</div>
+      <div class="payment-methods">
+        <div class="pay-option selected" id="pm-apple" onclick="selectPayMethod('apple')">
+          <div class="pay-option-icon">🍎</div>
+          <div class="pay-option-label">Apple Pay</div>
+        </div>
+        <div class="pay-option" id="pm-card" onclick="selectPayMethod('card')">
+          <div class="pay-option-icon">💳</div>
+          <div class="pay-option-label">Credit / Debit Card</div>
+        </div>
+        <div class="pay-option" id="pm-paypal" onclick="selectPayMethod('paypal')">
+          <div class="pay-option-icon">🅿️</div>
+          <div class="pay-option-label">PayPal</div>
+        </div>
+        <div class="pay-option" id="pm-bank" onclick="selectPayMethod('bank')">
+          <div class="pay-option-icon">🏦</div>
+          <div class="pay-option-label">Bank Transfer</div>
+        </div>
+      </div>
+
+      <!-- Card details (shown when card selected) -->
+      <div id="card-details" style="display:none">
+        <div class="form-group">
+          <label>Cardholder Name</label>
+          <input type="text" id="pay-name" placeholder="Jane Smith"/>
+        </div>
+        <div class="form-group">
+          <label>Card Number</label>
+          <input type="text" id="pay-card" placeholder="•••• •••• •••• ••••" maxlength="19" oninput="formatCard(this)"/>
+        </div>
+        <div class="card-fields">
+          <div class="form-group">
+            <label>Expiry</label>
+            <input type="text" id="pay-exp" placeholder="MM / YY" maxlength="7" oninput="formatExp(this)"/>
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" id="pay-cvv" placeholder="•••" maxlength="4"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- PayPal -->
+      <div id="paypal-details" style="display:none">
+        <div class="form-group">
+          <label>PayPal Email</label>
+          <input type="email" id="pay-pp-email" placeholder="you@paypal.com"/>
+        </div>
+      </div>
+
+      <!-- Apple Pay info -->
+      <div id="apple-details" style="background:var(--surface2);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:16px">
+        <div style="font-size:32px;margin-bottom:8px">🍎</div>
+        <div style="font-weight:600;margin-bottom:4px">Apple Pay</div>
+        <div style="color:var(--muted);font-size:13px">You'll confirm payment using Face ID or Touch ID</div>
+      </div>
+
+      <!-- Bank Transfer -->
+      <div id="bank-details" style="display:none;background:var(--surface2);border-radius:var(--radius);padding:16px;margin-bottom:16px">
+        <div style="font-weight:600;margin-bottom:10px">Bank Transfer Details</div>
+        <div style="font-size:13px;color:var(--muted);line-height:2">
+          BSB: <strong style="color:var(--white)">062-000</strong><br>
+          Account: <strong style="color:var(--white)">1234 5678</strong><br>
+          Reference: <strong style="color:var(--teal)" id="pay-ref"></strong>
+        </div>
+      </div>
+
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px;display:flex;gap:8px;align-items:center">
+        <span>🛡️</span> Protected by Lastsale Buyer Guarantee. Full refund if item doesn't arrive.
+      </div>
+
+      <div class="flex-between" style="margin-bottom:12px">
+        <span style="color:var(--muted)">Order total</span>
+        <span style="font-weight:700;color:var(--teal);font-size:18px" id="modal-order-total"></span>
+      </div>
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px" onclick="payStep2()">Continue →</button>
+    </div>
+
+    <!-- STEP 2: Confirm -->
+    <div id="pay-step-2" style="display:none">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:48px;margin-bottom:12px">🔐</div>
+        <div style="font-size:17px;font-weight:600;margin-bottom:6px">Confirm Your Order</div>
+        <div style="color:var(--muted);font-size:14px">Review details before finalising payment</div>
+      </div>
+      <div id="confirm-summary" style="background:var(--surface2);border-radius:var(--radius);padding:18px;margin-bottom:20px"></div>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-ghost" onclick="payStep1()">← Back</button>
+        <button class="btn btn-primary" style="flex:1;padding:14px" onclick="payStep3()">✅ Confirm & Pay</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Success -->
+    <div id="pay-step-3" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">Payment Successful!</div>
+        <p style="color:var(--muted);margin-bottom:24px">Your order has been placed. The seller has been notified.</p>
+        <div style="background:var(--surface2);border-radius:var(--radius);padding:16px;margin-bottom:24px;text-align:left">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Order Reference</div>
+          <div style="font-weight:700;color:var(--teal);font-size:18px" id="success-ref"></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-bottom:10px" onclick="closeModal('modal-payment');openView('orders')">View My Orders</button>
+        <button class="btn btn-ghost" style="width:100%" onclick="closeModal('modal-payment');openView('browse')">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODAL: RATE SELLER -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-rate">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <span class="modal-title">Rate Your Experience</span>
+      <button class="modal-close" onclick="closeModal('modal-rate')">✕</button>
+    </div>
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:40px;margin-bottom:8px">⭐</div>
+      <div style="color:var(--muted);font-size:14px">How was your experience with <strong id="rate-seller-name" style="color:var(--white)"></strong>?</div>
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="margin-bottom:10px;display:block">Response Speed</label>
+      <div id="stars-response" style="display:flex;gap:6px" data-val="0">
+        <span class="star" onclick="setStars('stars-response',1)">★</span>
+        <span class="star" onclick="setStars('stars-response',2)">★</span>
+        <span class="star" onclick="setStars('stars-response',3)">★</span>
+        <span class="star" onclick="setStars('stars-response',4)">★</span>
+        <span class="star" onclick="setStars('stars-response',5)">★</span>
+      </div>
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="margin-bottom:10px;display:block">Overall Experience</label>
+      <div id="stars-experience" style="display:flex;gap:6px" data-val="0">
+        <span class="star" onclick="setStars('stars-experience',1)">★</span>
+        <span class="star" onclick="setStars('stars-experience',2)">★</span>
+        <span class="star" onclick="setStars('stars-experience',3)">★</span>
+        <span class="star" onclick="setStars('stars-experience',4)">★</span>
+        <span class="star" onclick="setStars('stars-experience',5)">★</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Leave a comment (optional)</label>
+      <textarea id="rate-comment" placeholder="Share your experience with other buyers…"></textarea>
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:14px" onclick="submitRating()">Submit Review</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION TOAST -->
+<div class="notification" id="notification"></div>
+
+<script>
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let listings = [
+  { id:1, title:"Vintage Levi's 501 Jeans", price:65, category:"Fashion", condition:"Good", desc:"Classic Levi's 501. Size 32x32. Some fading for that authentic look.", seller:"Jordan M.", location:"Melbourne, VIC", emoji:"👖", views:143, photos:[] },
+  { id:2, title:"iPhone 13 Pro 256GB", price:750, category:"Electronics", condition:"Like New", desc:"Pristine condition, comes with original box and all accessories.", seller:"Anika R.", location:"Sydney, NSW", emoji:"📱", views:312, photos:[] },
+  { id:3, title:"Mid-Century Dining Table", price:420, category:"Home & Garden", condition:"Good", desc:"Solid teak. Seats 6. Minor surface scratches. Pickup only.", seller:"Chris B.", location:"Brisbane, QLD", emoji:"🪑", views:89, photos:[] },
+  { id:4, title:"Trek Mountain Bike", price:380, category:"Sports", condition:"Good", desc:"21-speed, 27.5\" wheels. Serviced last month. Great for trails.", seller:"Sam T.", location:"Perth, WA", emoji:"🚵", views:201, photos:[] },
+  { id:5, title:"Dyson V11 Vacuum", price:290, category:"Home & Garden", condition:"Like New", desc:"Used twice. Includes all attachments. Dust bin just replaced.", seller:"Priya K.", location:"Adelaide, SA", emoji:"🌀", views:176, photos:[] },
+  { id:6, title:"Harry Potter Complete Set", price:55, category:"Books", condition:"Good", desc:"All 7 hardcovers. Slight shelf wear but all readable.", seller:"Lena W.", location:"Hobart, TAS", emoji:"📚", views:64, photos:[] },
+];
+let myListings = [];
+let cart = [];
+let messages = {
+  1: { name:"Anika R.", listing:"iPhone 13 Pro", msgs:[
+    {me:false, text:"Hi! Is the iPhone still available?", time:"2:14 PM"},
+    {me:true, text:"Yes, still available! Happy to negotiate.", time:"2:16 PM"},
+    {me:false, text:"Can you do $700?", time:"2:20 PM"},
+  ]},
+  2: { name:"Chris B.", listing:"Mid-Century Dining Table", msgs:[
+    {me:false, text:"Would you consider $380 for the table?", time:"Yesterday"},
+    {me:true, text:"I can do $400 but that's my lowest.", time:"Yesterday"},
+  ]},
+};
+let orders = [];
+let selectedPayMethod = 'apple';
+let currentRatingOrderId = null;
+let activeCategory = 'All';
+let uploadedPhotos = [];
+let nextId = 100;
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function openView(name) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  const tabs = {browse:0,'my-listings':1,messages:2,cart:3,orders:4,'create-listing':5};
+  if(tabs[name]!==undefined) document.querySelectorAll('.tab')[tabs[name]].classList.add('active');
+  if(name==='browse') renderListings();
+  if(name==='my-listings') renderMyListings();
+  if(name==='cart') renderCart();
+  if(name==='messages') renderThreads();
+  if(name==='orders') renderOrders();
+}
+
+// ══════════════════════════════════════
+// LISTINGS
+// ══════════════════════════════════════
+function renderListings() {
+  const grid = document.getElementById('listings-grid');
+  const search = document.getElementById('search-input').value.toLowerCase();
+  let all = [...listings, ...myListings];
+  if(activeCategory!=='All') all = all.filter(l=>l.category===activeCategory);
+  if(search) all = all.filter(l=>l.title.toLowerCase().includes(search)||l.desc.toLowerCase().includes(search));
+  grid.innerHTML = all.map(l=>`
+    <div class="listing-card" onclick="openListing(${l.id})">
+      <div class="listing-card-img">${l.photos&&l.photos[0]?`<img src="${l.photos[0]}" style="width:100%;height:100%;object-fit:cover"/>`:l.emoji}</div>
+      <div class="listing-card-body">
+        <div class="listing-card-title">${l.title}</div>
+        <div class="listing-card-price">$${l.price}</div>
+        <div class="listing-card-meta">
+          <div class="listing-card-seller">📍 ${l.location}</div>
+          <div class="views-badge">👁 ${l.views}</div>
+        </div>
+      </div>
+    </div>
+  `).join('') || `<div class="empty-state" style="grid-column:1/-1"><div class="icon">🔍</div><div>No listings found</div></div>`;
+}
+
+function filterListings() { renderListings(); }
+function filterCategory(el, cat) {
+  activeCategory = cat;
+  document.querySelectorAll('#category-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderListings();
+}
+
+function openListing(id) {
+  const l = [...listings,...myListings].find(x=>x.id===id);
+  if(!l) return;
+  l.views++;
+  document.getElementById('modal-listing-title').textContent = l.title;
+  const isOwn = myListings.find(x=>x.id===id);
+  document.getElementById('modal-listing-body').innerHTML = `
+    <div class="listing-detail-imgs">
+      ${l.photos&&l.photos.length?l.photos.map(p=>`<div class="listing-detail-img"><img src="${p}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius)"/></div>`).join(''):`<div class="listing-detail-img">${l.emoji}</div>`}
+    </div>
+    <span class="tag">${l.category}</span><span class="tag">${l.condition}</span>
+    <div class="listing-detail-price">$${l.price} AUD</div>
+    <p style="color:var(--muted);line-height:1.7;margin-bottom:16px">${l.desc}</p>
+    <div class="seller-info">
+      <div class="seller-avatar">${l.seller[0]}</div>
+      <div>
+        <div style="font-weight:600">${l.seller}</div>
+        <div style="font-size:12px;color:var(--muted)">📍 ${l.location}</div>
+      </div>
+      <div class="views-badge" style="margin-left:auto">👁 ${l.views} views</div>
+    </div>
+    ${!isOwn?`
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-primary" style="flex:1" onclick="addToCart(${l.id})">🛒 Add to Cart</button>
+      <button class="btn btn-outline" onclick="msgSeller('${l.seller}','${l.title}')">💬 Message Seller</button>
+    </div>`:`<div style="background:var(--surface2);border-radius:var(--radius);padding:12px;text-align:center;color:var(--muted);font-size:14px;margin-top:16px">This is your listing — <strong style="color:var(--teal)">${l.views} people</strong> have viewed it</div>`}
+  `;
+  openModal('modal-listing');
+}
+
+// ══════════════════════════════════════
+// MY LISTINGS (SELLER)
+// ══════════════════════════════════════
+function renderMyListings() {
+  const el = document.getElementById('my-listings-list');
+  const totalViews = myListings.reduce((s,l)=>s+l.views,0);
+  const revenue = orders.filter(o=>myListings.find(l=>l.id===o.listingId)).reduce((s,o)=>s+o.price,0);
+  document.getElementById('stat-total').textContent = myListings.length;
+  document.getElementById('stat-views').textContent = totalViews;
+  document.getElementById('stat-sold').textContent = orders.filter(o=>myListings.find(l=>l.id===o.listingId)).length;
+  document.getElementById('stat-revenue').textContent = '$'+revenue;
+
+  if(!myListings.length) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">📦</div><div>You haven't listed anything yet</div><button class="btn btn-primary" style="margin-top:16px" onclick="openView('create-listing')">+ Create Listing</button></div>`;
+    return;
+  }
+  el.innerHTML = myListings.map(l=>`
+    <div class="my-listing-row">
+      <div style="font-size:32px">${l.photos&&l.photos[0]?`<img src="${l.photos[0]}" style="width:48px;height:48px;border-radius:8px;object-fit:cover"/>`:l.emoji}</div>
+      <div style="flex:1">
+        <div style="font-weight:600">${l.title}</div>
+        <div style="color:var(--teal);font-weight:700">$${l.price}</div>
+        <div style="font-size:12px;color:var(--muted)">${l.category} · ${l.condition}</div>
+      </div>
+      <div class="view-count">
+        <span style="font-size:18px">👁</span>
+        <span><strong style="color:var(--white)">${l.views}</strong> views</span>
+      </div>
+      <button class="btn btn-danger" style="padding:8px 14px;font-size:13px" onclick="deleteListing(${l.id})">Delete</button>
+    </div>
+  `).join('');
+}
+
+function deleteListing(id) {
+  myListings = myListings.filter(l=>l.id!==id);
+  renderMyListings();
+  notify('Listing removed');
+}
+
+// ══════════════════════════════════════
+// CREATE LISTING
+// ══════════════════════════════════════
+function handlePhotos(e) {
+  const files = Array.from(e.target.files);
+  const remaining = 6 - uploadedPhotos.length;
+  files.slice(0,remaining).forEach(f=>{
+    const reader = new FileReader();
+    reader.onload = ev => {
+      uploadedPhotos.push(ev.target.result);
+      renderPhotoPreviews();
+    };
+    reader.readAsDataURL(f);
+  });
+}
+
+function renderPhotoPreviews() {
+  const el = document.getElementById('photo-previews');
+  el.innerHTML = uploadedPhotos.map((p,i)=>`
+    <div class="photo-preview-wrap">
+      <img src="${p}" class="photo-preview"/>
+      <button class="photo-remove" onclick="removePhoto(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removePhoto(i) {
+  uploadedPhotos.splice(i,1);
+  renderPhotoPreviews();
+}
+
+function submitListing() {
+  const title = document.getElementById('cl-title').value.trim();
+  const price = parseFloat(document.getElementById('cl-price').value);
+  const cat = document.getElementById('cl-category').value;
+  const cond = document.getElementById('cl-condition').value;
+  const desc = document.getElementById('cl-desc').value.trim();
+  const loc = document.getElementById('cl-location').value.trim() || 'Australia';
+
+  if(!title||!price||!cat||!desc) { notify('⚠️ Please fill in all required fields'); return; }
+
+  const emojis = {Fashion:'👗',Electronics:'📱','Home & Garden':'🏡',Vehicles:'🚗',Sports:'⚽',Books:'📚'};
+  const newL = { id:nextId++, title, price, category:cat, condition:cond, desc, seller:'You', location:loc, emoji:emojis[cat]||'📦', views:0, photos:[...uploadedPhotos] };
+  myListings.unshift(newL);
+
+  // reset
+  ['cl-title','cl-price','cl-desc','cl-location'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cl-category').value='';
+  uploadedPhotos=[];
+  renderPhotoPreviews();
+
+  notify('🎉 Listing posted successfully!');
+  openView('my-listings');
+}
+
+// ══════════════════════════════════════
+// CART
+// ══════════════════════════════════════
+function addToCart(id) {
+  const l = [...listings,...myListings].find(x=>x.id===id);
+  if(!l) return;
+  if(cart.find(c=>c.id===id)) { notify('Already in cart'); return; }
+  cart.push({...l});
+  updateCartBadge();
+  notify('🛒 Added to cart!');
+  closeModal('modal-listing');
+}
+
+function updateCartBadge() {
+  document.getElementById('cart-badge').textContent = cart.length;
+}
+
+function renderCart() {
+  const el = document.getElementById('cart-items-list');
+  const empty = document.getElementById('cart-empty');
+  const totalBox = document.getElementById('cart-total-box');
+  if(!cart.length) { el.innerHTML=''; empty.style.display='block'; totalBox.style.display='none'; return; }
+  empty.style.display='none'; totalBox.style.display='block';
+  el.innerHTML = cart.map(l=>`
+    <div class="cart-item">
+      <div class="cart-item-img">${l.photos&&l.photos[0]?`<img src="${l.photos[0]}" style="width:60px;height:60px;object-fit:cover;border-radius:8px"/>`:l.emoji}</div>
+      <div style="flex:1">
+        <div style="font-weight:600">${l.title}</div>
+        <div style="font-size:13px;color:var(--muted)">${l.seller} · ${l.category}</div>
+      </div>
+      <div style="font-weight:700;color:var(--teal);margin-right:12px">$${l.price}</div>
+      <button class="btn btn-ghost" style="padding:8px 12px;font-size:12px" onclick="removeFromCart(${l.id})">✕</button>
+    </div>
+  `).join('');
+  const sub = cart.reduce((s,c)=>s+c.price,0);
+  const fee = +(sub*0.02).toFixed(2);
+  const total = +(sub+fee).toFixed(2);
+  document.getElementById('cart-subtotal').textContent='$'+sub.toFixed(2);
+  document.getElementById('cart-fee').textContent='$'+fee;
+  document.getElementById('cart-total-amount').textContent='$'+total;
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c=>c.id!==id);
+  updateCartBadge();
+  renderCart();
+}
+
+// ══════════════════════════════════════
+// MESSAGES
+// ══════════════════════════════════════
+let activeThread = null;
+
+function renderThreads() {
+  const el = document.getElementById('threads-list');
+  const keys = Object.keys(messages);
+  if(!keys.length) { el.innerHTML=`<div class="empty-state"><div class="icon">💬</div><div>No messages yet</div></div>`; return; }
+  el.innerHTML = keys.map(k=>`
+    <div class="msg-thread" onclick="openThread(${k})">
+      <div class="msg-avatar">${messages[k].name[0]}</div>
+      <div>
+        <div style="font-weight:600">${messages[k].name}</div>
+        <div style="font-size:13px;color:var(--muted)">Re: ${messages[k].listing}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">${messages[k].msgs[messages[k].msgs.length-1].text.slice(0,50)}…</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openThread(id) {
+  activeThread = id;
+  const t = messages[id];
+  document.getElementById('threads-list').style.display='none';
+  document.getElementById('chat-view').style.display='block';
+  document.getElementById('chat-header').innerHTML=`<div class="msg-avatar" style="display:inline-flex">${t.name[0]}</div> <span style="margin-left:8px">${t.name}</span> <span style="color:var(--muted);font-size:13px;margin-left:8px">Re: ${t.listing}</span>`;
+  renderChat();
+}
+
+function renderChat() {
+  const t = messages[activeThread];
+  document.getElementById('chat-area').innerHTML = t.msgs.map(m=>`
+    <div style="display:flex;flex-direction:column;align-items:${m.me?'flex-end':'flex-start'}">
+      <div class="msg-bubble ${m.me?'me':'them'}">${m.text}</div>
+      <div class="msg-time">${m.time}</div>
+    </div>
+  `).join('');
+  document.getElementById('chat-area').scrollTop=99999;
+}
+
+function sendMessage() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if(!text||!activeThread) return;
+  const now = new Date();
+  messages[activeThread].msgs.push({me:true,text,time:`${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`});
+  input.value='';
+  renderChat();
+}
+
+function msgSeller(seller, listing) {
+  const key = Date.now();
+  messages[key] = { name:seller, listing, msgs:[{me:true,text:`Hi ${seller}! Is the "${listing}" still available?`,time:'Just now'}] };
+  document.getElementById('msg-badge').textContent=Object.keys(messages).length;
+  closeModal('modal-listing');
+  openView('messages');
+  openThread(key);
+  notify('💬 Message sent!');
+}
+
+// ══════════════════════════════════════
+// PAYMENT
+// ══════════════════════════════════════
+function openPayment() {
+  if(!cart.length) return;
+  const sub = cart.reduce((s,c)=>s+c.price,0);
+  const total = +(sub*1.02).toFixed(2);
+  document.getElementById('modal-order-total').textContent='$'+total;
+  document.getElementById('pay-ref').textContent='LS-'+Math.random().toString(36).substr(2,8).toUpperCase();
+  payStep1();
+  openModal('modal-payment');
+}
+
+function selectPayMethod(m) {
+  selectedPayMethod=m;
+  ['apple','card','paypal','bank'].forEach(p=>{
+    document.getElementById('pm-'+p).classList.toggle('selected',p===m);
+  });
+  document.getElementById('card-details').style.display=m==='card'?'block':'none';
+  document.getElementById('paypal-details').style.display=m==='paypal'?'block':'none';
+  document.getElementById('apple-details').style.display=m==='apple'?'block':'none';
+  document.getElementById('bank-details').style.display=m==='bank'?'block':'none';
+}
+
+function payStep1() {
+  document.getElementById('pay-step-1').style.display='block';
+  document.getElementById('pay-step-2').style.display='none';
+  document.getElementById('pay-step-3').style.display='none';
+  setPayStep(1);
+}
+
+function payStep2() {
+  if(selectedPayMethod==='card') {
+    const name=document.getElementById('pay-name').value.trim();
+    const card=document.getElementById('pay-card').value.trim();
+    const exp=document.getElementById('pay-exp').value.trim();
+    const cvv=document.getElementById('pay-cvv').value.trim();
+    if(!name||!card||!exp||!cvv){notify('⚠️ Please fill in all card details');return;}
+  }
+  if(selectedPayMethod==='paypal'&&!document.getElementById('pay-pp-email').value.trim()){notify('⚠️ Enter your PayPal email');return;}
+
+  const sub=cart.reduce((s,c)=>s+c.price,0);
+  const total=+(sub*1.02).toFixed(2);
+  const methods={apple:'Apple Pay 🍎',card:'Credit/Debit Card 💳',paypal:'PayPal 🅿️',bank:'Bank Transfer 🏦'};
+  document.getElementById('confirm-summary').innerHTML=`
+    <div style="margin-bottom:10px"><span style="color:var(--muted)">Items:</span><br>${cart.map(c=>`<div style="display:flex;justify-content:space-between;margin-top:6px"><span>${c.title}</span><span style="color:var(--teal)">$${c.price}</span></div>`).join('')}</div>
+    <hr style="border-color:var(--border);margin:12px 0"/>
+    <div class="flex-between"><span style="color:var(--muted)">Payment via</span><span>${methods[selectedPayMethod]}</span></div>
+    <div class="flex-between" style="margin-top:8px"><span style="color:var(--muted)">Total</span><strong style="color:var(--teal);font-size:18px">$${total}</strong></div>
+  `;
+  document.getElementById('pay-step-1').style.display='none';
+  document.getElementById('pay-step-2').style.display='block';
+  setPayStep(2);
+}
+
+function payStep3() {
+  const ref='LS-'+Math.random().toString(36).substr(2,8).toUpperCase();
+  document.getElementById('success-ref').textContent=ref;
+  // add to orders
+  cart.forEach(l=>{
+    orders.unshift({id:ref+'-'+l.id,listingId:l.id,title:l.title,price:l.price,seller:l.seller,emoji:l.emoji,photos:l.photos,rated:false,ref});
+  });
+  cart=[];
+  updateCartBadge();
+  document.getElementById('pay-step-2').style.display='none';
+  document.getElementById('pay-step-3').style.display='block';
+  setPayStep(3);
+}
+
+function setPayStep(n) {
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('pstep-'+i);
+    el.className='step'+(i<n?' done':i===n?' active':'');
+  });
+}
+
+function formatCard(el) {
+  let v=el.value.replace(/\D/g,'').substr(0,16);
+  el.value=v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExp(el) {
+  let v=el.value.replace(/\D/g,'').substr(0,4);
+  if(v.length>=3) v=v.substr(0,2)+' / '+v.substr(2);
+  el.value=v;
+}
+
+// ══════════════════════════════════════
+// ORDERS & RATINGS
+// ══════════════════════════════════════
+function renderOrders() {
+  const el=document.getElementById('orders-list');
+  if(!orders.length){
+    el.innerHTML=`<div class="empty-state"><div class="icon">📋</div><div>No orders yet</div><button class="btn btn-primary" style="margin-top:16px" onclick="openView('browse')">Start Shopping</button></div>`;
+    return;
+  }
+  el.innerHTML=orders.map(o=>`
+    <div class="rating-card">
+      <div class="flex-between" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:32px">${o.photos&&o.photos[0]?`<img src="${o.photos[0]}" style="width:44px;height:44px;border-radius:8px;object-fit:cover"/>`:o.emoji}</div>
+          <div>
+            <div style="font-weight:600">${o.title}</div>
+            <div style="font-size:13px;color:var(--muted)">Seller: ${o.seller}</div>
+            <div style="font-size:12px;color:var(--muted)">Ref: ${o.ref}</div>
+          </div>
+        </div>
+        <div style="font-weight:700;color:var(--teal)">$${o.price}</div>
+      </div>
+      ${o.rated?
+        `<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)"><span class="stars-display">${'★'.repeat(o.ratingVal)}</span> Review submitted</div>`:
+        `<button class="btn btn-outline" style="font-size:13px;padding:8px 16px" onclick="openRating('${o.id}','${o.seller}')">⭐ Rate Seller</button>`
+      }
+    </div>
+  `).join('');
+}
+
+function openRating(orderId,seller) {
+  currentRatingOrderId=orderId;
+  document.getElementById('rate-seller-name').textContent=seller;
+  ['stars-response','stars-experience'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.dataset.val=0;
+    el.querySelectorAll('.star').forEach(s=>s.classList.remove('active'));
+  });
+  document.getElementById('rate-comment').value='';
+  openModal('modal-rate');
+}
+
+function setStars(containerId,val) {
+  const el=document.getElementById(containerId);
+  el.dataset.val=val;
+  el.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('active',i<val));
+}
+
+function submitRating() {
+  const r1=parseInt(document.getElementById('stars-response').dataset.val)||0;
+  const r2=parseInt(document.getElementById('stars-experience').dataset.val)||0;
+  if(!r1||!r2){notify('⚠️ Please rate both categories');return;}
+  const avg=Math.round((r1+r2)/2);
+  const o=orders.find(o=>o.id===currentRatingOrderId);
+  if(o){o.rated=true;o.ratingVal=avg;}
+  closeModal('modal-rate');
+  renderOrders();
+  notify('⭐ Review submitted! Thank you.');
+}
+
+// ══════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+
+// ══════════════════════════════════════
+// NOTIFICATION TOAST
+// ══════════════════════════════════════
+let notifyTimer;
+function notify(msg) {
+  const el=document.getElementById('notification');
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(notifyTimer);
+  notifyTimer=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+renderListings();
+selectPayMethod('apple');
+</script>
+</body>
+</html>
